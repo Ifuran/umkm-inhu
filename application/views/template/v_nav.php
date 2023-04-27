@@ -9,10 +9,10 @@
                         </div>
                         <!-- /input-group -->
                       </li>
+                      <?php if ($this->session->userdata('role_id') == 1) { ?> 
                       <li>
                         <a href="<?= base_url('dashboard') ?>" style="padding-top: 20px ;padding-bottom: 20px ;"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                      </li> 
-                      <?php if ($this->session->userdata('role_id') == 1) { ?>     
+                      </li>                         
                       <li>
                         <a href="<?= base_url('user') ?>" style="padding-top: 20px ;padding-bottom: 20px ;"><i class="fa fa-user fa-fw"></i> Pengguna</a>
                       </li>  

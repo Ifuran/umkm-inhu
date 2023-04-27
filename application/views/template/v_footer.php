@@ -23,10 +23,7 @@
 
         <!-- DataTables JavaScript -->
         <script src="<?= base_url() ?>template/js/dataTables/jquery.dataTables.min.js"></script>
-        <script src="<?= base_url() ?>template/js/dataTables/dataTables.bootstrap.min.js"></script>
-
-        <!-- Custom Theme JavaScript -->
-        <script src="<?= base_url() ?>template/js/startmin.js"></script>
+        <script src="<?= base_url() ?>template/js/dataTables/dataTables.bootstrap.min.js"></script>        
 
         <!-- Page-Level Demo Scripts - Tables - Use for reference -->
         <script>

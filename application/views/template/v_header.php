@@ -2,8 +2,7 @@
 .navbar {
   background-color: #337ab7;             
 }
-.navbar-header {
-  margin-left: 50px;  
+.navbar-header {   
   color: #fff;  
 } 
 .nav a:hover {

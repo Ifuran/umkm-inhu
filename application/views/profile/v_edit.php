@@ -30,7 +30,7 @@
               <div class="form-group">
                 <?= form_error('no_kk', '<small class="text-danger">', '</small>') ?>
                 <label for="no_kk" class="col-sm-12">No.KK</label>                        
-                <input type="text" class="form-control col" id="no_kk" name="no_kk" value="<?= $profile->no_kk ?>">            
+                <input type="text" class="form-control col" id="no_kk" name="no_kk" value="<?= $profile->no_kk ?>" readonly>            
               </div>
               <div class="form-group">
                 <?= form_error('no_telp', '<small class="text-danger">', '</small>') ?>

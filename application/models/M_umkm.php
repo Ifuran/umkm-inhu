@@ -13,8 +13,19 @@ class M_umkm extends CI_Model {
 		return $this->db->get()->result();
 	}
 
+	public function verifikasi_umkm() {
+		$this->db->select('*,tb_umkm.id as id_umkm, tb_pengguna.nama as user,tb_kecamatan.id as id_kecamatan, tb_kecamatan.nama as kecamatan, tb_sektor.id as id_sektor, tb_sektor.nama as sektor');
+		$this->db->from('tb_umkm');
+		$this->db->join('tb_pengguna', 'tb_pengguna.id = tb_umkm.id_pengguna');
+		$this->db->join('tb_kecamatan', 'tb_kecamatan.id = tb_umkm.id_kec');
+		$this->db->join('tb_sektor', 'tb_sektor.id = tb_umkm.id_sektor');
+		$this->db->where('tb_umkm.approve', 0);
+		$this->db->order_by("tb_umkm.id", "desc");
+		return $this->db->get()->result();
+	}
+
 	public function profile($id) {
-		$this->db->select('*,tb_umkm.id as id_umkm, tb_umkm.tgl_dibuat as tgl_umkm, tb_pengguna.nama as user, tb_pengguna.tgl_dibuat as tgl_pengguna, tb_kecamatan.nama as kecamatan, tb_sektor.nama as sektor');
+		$this->db->select('*,tb_umkm.id as id_umkm, tb_umkm.tgl_dibuat as tgl_umkm, tb_pengguna.id as id_pengguna, tb_pengguna.nama as user, tb_pengguna.tgl_dibuat as tgl_pengguna, tb_kecamatan.nama as kecamatan, tb_sektor.nama as sektor');
 		$this->db->from('tb_umkm');
 		$this->db->join('tb_pengguna', 'tb_pengguna.id = tb_umkm.id_pengguna');
 		$this->db->join('tb_kecamatan', 'tb_kecamatan.id = tb_umkm.id_kec');
@@ -22,7 +33,7 @@ class M_umkm extends CI_Model {
 		$this->db->where('tb_umkm.id', $id);
 		return $this->db->get()->row();
 	}
-	
+
 	public function addUmkm($data) {
 		$this->db->insert('tb_umkm', $data);
 	}
@@ -32,27 +43,15 @@ class M_umkm extends CI_Model {
 		$this->db->update('tb_umkm', $data);
 	}
 
-	public function deleteUmkm($id) {
-		$this->db->where('id', $id);
-		$this->db->delete('tb_umkm');		
+	public function editUser($id) {
+		$this->db->where('Field / comparison', $Value);
 	}
-
-	public function detail($umkm_id) {
-		$this->db->select('*');
-		$this->db->from('tb_umkm');
-		$this->db->where('umkm_id', $umkm_id);
-		return $this->db->get()->row();	
-	}	
-	
-	public function delete($data) {
-		$this->db->where('umkm_id', $data['umkm_id']);
-		$this->db->delete('tb_umkm', $data);
-	}	
 
 	public function users() {
 		$this->db->select('*');
 		$this->db->from('tb_pengguna');
 		$this->db->where('role_id NOT IN (1)');
+		$this->db->order_by('id', 'desc');
 		return $this->db->get()->result();
 	}
 
@@ -61,16 +60,17 @@ class M_umkm extends CI_Model {
 		$this->db->from('tb_kecamatan');		
 		return $this->db->get()->result();
 	}
-	
-	public function umkm() {		
-		return $this->db->count_all('tb_umkm');		
-	}
-	
-	public function user() {		
-		return $this->db->count_all('tb_user');		
+
+	public function deleteUmkm($id) {
+		$this->db->where('id', $id);
+		$this->db->delete('tb_umkm');		
 	}
 
-	// fungsi seputar kategori sektor
+	public function geojson() {
+		$this->db->select('*');
+		$this->db->from('tb_peta');
+		return $this->db->get()->result();
+	}
 
 	public function sektor() {		
 		$this->db->select('tb_sektor.*, count(tb_umkm.id_sektor) as jumlah_umkm');

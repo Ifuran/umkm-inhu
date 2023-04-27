@@ -21,7 +21,8 @@ class Umkm extends CI_Controller {
 			'users' => $this->m_umkm->users(),
 			'kecamatan' => $this->m_umkm->kecamatan(),
 			'sektor' => $this->m_umkm->sektor(),
-			'map'	=> $this->googlemaps->create_map()										
+			'map'	=> $this->googlemaps->create_map(),
+			'geojson'  => $this->m_umkm->geojson()											
 		);	
 
 		$this->form_validation->set_rules('id_pengguna', 'Nama', 'required', [
@@ -39,9 +40,10 @@ class Umkm extends CI_Controller {
 		$this->form_validation->set_rules('id_sektor', 'Sektor', 'required', [
 			'required' => '*Tidak boleh kosong!'
 		]);
-		$this->form_validation->set_rules('no_hp', 'No Telepon', 'required|numeric', [
+		$this->form_validation->set_rules('no_hp', 'No Telepon', 'required|numeric|min_length[11]|trim', [
 			'required' => '*Tidak boleh kosong!',
-			'numeric' => '*Masukan angka!'
+			'numeric' => '*Masukan angka!',
+			'min_length'=> '*Minimal 11 digit!'
 		]);
 		$this->form_validation->set_rules('umkm_lat', 'Latitude', 'required', [
 			'required' => '*Tidak boleh kosong!'
@@ -56,8 +58,8 @@ class Umkm extends CI_Controller {
 			$data = array(
 				'id_pengguna' => $this->input->post('id_pengguna'),
 				'id_kec' => $this->input->post('id_kec'),
-				'umkm_desa' => htmlspecialchars($this->input->post('umkm_desa', true)),
-				'bidang' => htmlspecialchars($this->input->post('bidang', true)),
+				'umkm_desa' => strtoupper(htmlspecialchars($this->input->post('umkm_desa', true))),
+				'bidang' => strtoupper(htmlspecialchars($this->input->post('bidang', true))),
 				'id_sektor' => $this->input->post('id_sektor'),
 				'no_hp' => htmlspecialchars($this->input->post('no_hp', true)),
 				'tgl_dibuat' => time(),
@@ -67,7 +69,7 @@ class Umkm extends CI_Controller {
 			);
 			$gambar = $_FILES['gambar']['name'];
 			if ($gambar) {
-				$config['upload_path'] = './assets/img/umkm';
+				$config['upload_path'] = './template/img/umkm';
 				$config['allowed_types'] = 'gif|jpg|png';
 				$config['max_size']     = '2048';				
 
@@ -98,7 +100,8 @@ class Umkm extends CI_Controller {
 			'users' => $this->m_umkm->users(),
 			'kecamatan' => $this->m_umkm->kecamatan(),
 			'sektor' => $this->m_umkm->sektor(),
-			'map'	=> $this->googlemaps->create_map()
+			'map'	=> $this->googlemaps->create_map(),
+			'geojson'  => $this->m_umkm->geojson()		
 		);
 		$this->form_validation->set_rules('id_pengguna', 'Nama', 'required', [
 			'required' => '*Tidak boleh kosong!'
@@ -115,9 +118,10 @@ class Umkm extends CI_Controller {
 		$this->form_validation->set_rules('id_sektor', 'Sektor', 'required', [
 			'required' => '*Tidak boleh kosong!'
 		]);
-		$this->form_validation->set_rules('no_hp', 'No Telepon', 'required|numeric', [
+		$this->form_validation->set_rules('no_hp', 'No Telepon', 'required|numeric|min_length[11]', [
 			'required' => '*Tidak boleh kosong!',
-			'numeric' => '*Masukan angka!'
+			'numeric' => '*Masukan angka!',
+			'min_length'=> '*Minimal 11 digit!'
 		]);
 		$this->form_validation->set_rules('umkm_lat', 'Latitude', 'required', [
 			'required' => '*Tidak boleh kosong!'
@@ -133,8 +137,8 @@ class Umkm extends CI_Controller {
 				'id' => $id,
 				'id_pengguna' => $this->input->post('id_pengguna'),
 				'id_kec' => $this->input->post('id_kec'),
-				'umkm_desa' => htmlspecialchars($this->input->post('umkm_desa', true)),
-				'bidang' => htmlspecialchars($this->input->post('bidang', true)),
+				'umkm_desa' => strtoupper(htmlspecialchars($this->input->post('umkm_desa', true))),
+				'bidang' => strtoupper(htmlspecialchars($this->input->post('bidang', true))),
 				'id_sektor' => $this->input->post('id_sektor'),
 				'no_hp' => htmlspecialchars($this->input->post('no_hp', true)),
 				'umkm_lat' => htmlspecialchars($this->input->post('umkm_lat', true)),
@@ -143,7 +147,7 @@ class Umkm extends CI_Controller {
 			$gambar = $_FILES['gambar']['name'];			
 
 			if ($gambar) {
-				$config['upload_path'] = './assets/img/umkm';
+				$config['upload_path'] = './template/img/umkm';
 				$config['allowed_types'] = 'gif|jpg|png';
 				$config['max_size']     = '2048';				
 
@@ -153,7 +157,7 @@ class Umkm extends CI_Controller {
 					$db_gambar = $this->m_umkm->profile($id);
 					$gambar_lama = $db_gambar->gambar;
 					if ($gambar_lama != 'default.jpg') {
-						unlink(FCPATH . 'assets/img/umkm/' . $gambar_lama);
+						unlink(FCPATH . 'template/img/umkm/' . $gambar_lama);
 					}
 
 					$gambar_baru = $this->upload->data('file_name');
@@ -178,11 +182,84 @@ class Umkm extends CI_Controller {
 		$db_gambar = $this->m_umkm->profile($id);
 		$gambar_lama = $db_gambar->gambar;
 		if ($gambar_lama != 'umkm.jpg') {
-			unlink(FCPATH . 'assets/img/umkm/' . $gambar_lama);
+			unlink(FCPATH . 'template/img/umkm/' . $gambar_lama);
 		}
 		$this->m_umkm->deleteUmkm($id);
 		$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Berhasil menghapus data!</div>');
 		redirect('umkm');
+	}
+
+	public function registration() {
+		check_login();
+		$id = $this->session->userdata('id');	
+		$data = array(
+			'title' => 'Pendaftaran UMKM',
+			'isi' 	=> 'umkm/v_registration',
+			'user' => $this->db->get_where('tb_pengguna', ['nik' => $this->session->userdata('nik')])->row_array(),
+			'umkm'	=> $this->m_umkm->list(),
+			'users' => $this->m_umkm->users(),
+			'kecamatan' => $this->m_umkm->kecamatan(),
+			'sektor' => $this->m_umkm->sektor(),
+			'map'	=> $this->googlemaps->create_map(),
+			'geojson'  => $this->m_umkm->geojson()																				
+		);				
+		$this->form_validation->set_rules('id_kec', 'Kecamatan', 'required', [
+			'required' => '*Tidak boleh kosong!'
+		]);
+		$this->form_validation->set_rules('umkm_desa', 'Alamat usaha', 'required|trim', [
+			'required' => '*Tidak boleh kosong!'
+		]);
+		$this->form_validation->set_rules('bidang', 'Bidang usaha', 'required|trim', [
+			'required' => '*Tidak boleh kosong!'
+		]);
+		$this->form_validation->set_rules('id_sektor', 'Sektor', 'required', [
+			'required' => '*Tidak boleh kosong!'
+		]);
+		$this->form_validation->set_rules('no_hp', 'No Telepon', 'required|numeric|min_length[11]', [
+			'required' => '*Tidak boleh kosong!',
+			'numeric' => '*Masukan angka!',
+			'min_length'=> '*Minimal 11 digit!'
+		]);
+		$this->form_validation->set_rules('umkm_lat', 'Latitude', 'required', [
+			'required' => '*Tidak boleh kosong!'
+		]);
+		$this->form_validation->set_rules('umkm_lon', 'Longitude', 'required', [
+			'required' => '*Tidak boleh kosong!'
+		]);		
+
+		if ($this->form_validation->run() == FALSE) {
+			$this->load->view('template/v_wrapper', $data, FALSE);		
+		} else {
+			$data = array(
+				'id_pengguna' => $id,
+				'id_kec' => $this->input->post('id_kec'),
+				'umkm_desa' => htmlspecialchars($this->input->post('umkm_desa', true)),
+				'bidang' => htmlspecialchars($this->input->post('bidang', true)),
+				'id_sektor' => $this->input->post('id_sektor'),
+				'no_hp' => htmlspecialchars($this->input->post('no_hp', true)),
+				'tgl_dibuat' => time(),
+				'umkm_lat' => htmlspecialchars($this->input->post('umkm_lat', true)),
+				'umkm_lon' => htmlspecialchars($this->input->post('umkm_lon', true)),
+				'approve' => 0
+			);
+			$gambar = $_FILES['gambar']['name'];
+			if ($gambar) {
+				$config['upload_path'] = './template/img/umkm';
+				$config['allowed_types'] = 'gif|jpg|png';
+				$config['max_size']     = '2048';				
+
+				$this->load->library('upload', $config);
+				$this->upload->do_upload('gambar');
+				$gambar_baru = $this->upload->data('file_name');
+				$this->db->set('gambar', $gambar_baru);
+				
+			} else {
+				$data['gambar'] = 'umkm.jpg';
+			}
+			$this->m_umkm->addUmkm($data);
+			$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Berhasil mendaftarkan usaha! Silahkan tunggu konfirmasi admin</div>');	
+			redirect('umkm');
+		}
 	}
 
 	public function verifikasi() {
@@ -211,7 +288,7 @@ class Umkm extends CI_Controller {
 		$db_gambar = $this->m_umkm->profile($id);
 		$gambar_lama = $db_gambar->gambar;
 		if ($gambar_lama != 'default.jpg') {
-			unlink(FCPATH . 'assets/img/umkm/' . $gambar_lama);
+			unlink(FCPATH . 'template/img/umkm/' . $gambar_lama);
 		}
 		$this->m_umkm->delete($id);
 		$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Berhasil menolak pendaftaran usaha!</div>');
@@ -219,6 +296,8 @@ class Umkm extends CI_Controller {
 	}
 
 	public function setujuiUsaha($id) {
+		// $user = $this->session->userdata('id');
+		$user = $this->m_umkm->profile($id);
 		$role_id = $this->session->userdata('role_id');	
 		if ($role_id != 1) {
 			redirect('auth/blocked');
@@ -228,6 +307,9 @@ class Umkm extends CI_Controller {
 			'approve' => 1
 		);
 		$this->m_umkm->editUmkm($data);
+		$this->db->set('role_id', 3);
+		$this->db->where('id', $user->id_pengguna);
+		$this->db->update('tb_pengguna');
 		$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Berhasil menyetujui pendaftaran usaha!</div>');
 		redirect('umkm/verifikasi');
 

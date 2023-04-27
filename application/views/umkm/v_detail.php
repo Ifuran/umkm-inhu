@@ -23,8 +23,8 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <th scope="row">Nama</th>
-                        <td><?= $profile->user ?></td>      
+                        <th scope="row">Pemilik</th>
+                        <td><a href="<?= base_url('user/detail/').$profile->id_pengguna ?>"><?= $profile->user ?></a></td>      
                       </tr>
                       <tr>
                         <th scope="row">Alamat</th>
@@ -61,7 +61,7 @@
                       <tr>
                         <th scope="row">Telusuri Lokasi</th>
                         <td>
-                          <a href="<?= base_url('map/rute/'.$profile->id) ?>" class="btn btn-primary px-5 py-2"><i class="fas fa-fw fa-map-marked-alt"></i> Lihat Rute</a>
+                          <a href="<?= base_url('map/rute/'.$profile->id_umkm) ?>" class="btn btn-primary px-5 py-2"><i class="fas fa-fw fa-map-marked-alt"></i> Lihat Rute</a>
                         </td>              
                       </tr>
                     </tbody>

@@ -14,10 +14,10 @@ class Auth extends CI_Controller {
 		if ($this->session->userdata('nik')) {
 			redirect('profile');
 		}			
-		$this->form_validation->set_rules('nik', 'NIK', 'numeric|required|exact_length[5]', [
+		$this->form_validation->set_rules('nik', 'NIK', 'numeric|required|exact_length[16]', [
 			'required'	=> '*Tidak boleh kosong!',
 			'numeric'	=> '*Masukan angka!',
-			'exact_length'=> '*NIK harus 5 digit!'
+			'exact_length'=> '*NIK harus 16 digit!'
 		]);
 		$this->form_validation->set_rules('password', 'Password', 'required', [
 			'required'	=> '*Tidak boleh kosong!'
@@ -37,7 +37,8 @@ class Auth extends CI_Controller {
 			if ($user) {
 				if ($user['is_active'] == 1) {
 					if (password_verify($password, $user['password'])) {
-						$data = array(							
+						$data = array(
+							'id' => $user['id'],							
 							'nik' => $user['nik'],
 							'email' => $user['email'],
 							'role_id' => $user['role_id']						
@@ -71,27 +72,28 @@ class Auth extends CI_Controller {
 		$this->form_validation->set_rules('nama', 'Nama', 'required|trim', [
 			'required'	=> '*Tidak boleh kosong!'			
 		]);		
-		$this->form_validation->set_rules('nik', 'NIK', 'trim|numeric|required|exact_length[5]|is_unique[tb_pengguna.nik]', [
-			'required'	=> '*Tidak boleh kosong!',
+		$this->form_validation->set_rules('nik', 'NIK', 'trim|numeric|required|exact_length[16]|is_unique[tb_pengguna.nik]', [
+			'required'	=> '*Tidak boleh kosong!', 
 			'numeric'	=> '*Masukan angka!',
-			'exact_length'=> '*NIK harus 5 digit!',
+			'exact_length'=> '*NIK harus 16 digit!',
 			'is_unique'	=> '*NIK sudah terdaftar!'
 		]);
-		$this->form_validation->set_rules('no_kk', 'No.KK', 'trim|numeric|required|exact_length[5]', [
+		$this->form_validation->set_rules('no_kk', 'No.KK', 'trim|numeric|required|exact_length[16]', [
 			'required'	=> '*Tidak boleh kosong!',
 			'numeric'	=> '*Masukan angka!',			
-			'exact_length'=> '*No.KK harus 5 digit!'
+			'exact_length'=> '*No.KK harus 16 digit!'
 		]);
-		$this->form_validation->set_rules('no_telp', 'No.Telp', 'trim|numeric|required', [
+		$this->form_validation->set_rules('no_telp', 'No.Telp', 'trim|numeric|required|min_length[11]', [
 			'required'	=> '*Tidak boleh kosong!',
-			'numeric'	=> '*Masukan angka!'
+			'numeric'	=> '*Masukan angka!',
+			'min_length'=> '*Minimal 11 digit!'
 		]);
-		$this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email', [
+		$this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|is_unique[tb_pengguna.email]', [
 			'required'	=> '*Tidak boleh kosong!',
 			'valid_email'=> '*Email tidak valid!',
-			'is_unique'	=> '*NIK sudah terdaftar!'			
+			'is_unique'	=> '*Email sudah terdaftar!'			
 		]);
-		$this->form_validation->set_rules('password1', 'Password', 'trim|required|min_length[3]|matches[password2]', [
+		$this->form_validation->set_rules('password1', 'Password', 'trim|required|min_length[5]|matches[password2]', [
 			'required'	=> '*Tidak boleh kosong!',
 			'matches'	=> '*Password harus sama',
 			'min_length'=> '*Password terlalu pendek'
@@ -130,7 +132,7 @@ class Auth extends CI_Controller {
 				'asal_kec' => $this->input->post('asal_kec'),
 				'asal_desa' => htmlspecialchars($this->input->post('asal_desa', true)),
 				'foto' => 'default.png',	
-				'role_id' => $this->input->post('role_id'),
+				'role_id' => 2,
 				'is_active' => 0,				
 				'tgl_dibuat' => time()
 			);		
@@ -173,7 +175,6 @@ class Auth extends CI_Controller {
 			$this->email->subject('Reset Password Akun');			
 			$this->email->message('Klik link berikut untuk reset password akun Anda : '.base_url().'auth/resetpassword?email='.$this->input->post('email').'&token='. urlencode($token));
 		}
-
 		
 		if ($this->email->send()) {
 			return true;

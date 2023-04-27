@@ -7,14 +7,14 @@ class User extends CI_Controller {
 		parent::__construct();
 		$this->load->library('googlemaps');			
 		$this->load->model('m_user');
-		check_login();
+		check_login();		
+	}
+
+	public function index() {
 		$role_id = $this->session->userdata('role_id');
 		if ($role_id != 1) {
 			redirect('auth/blocked');
-		}
-	}
-
-	public function index() {		
+		}		
 		$data = array(
 			'title' => 'Pengguna',
 			'isi' => 'user/v_index',
@@ -30,20 +30,21 @@ class User extends CI_Controller {
 		$this->form_validation->set_rules('nama', 'Nama', 'required|trim', [
 			'required'	=> '*Tidak boleh kosong!'			
 		]);		
-		$this->form_validation->set_rules('nik', 'NIK', 'trim|numeric|required|is_unique[tb_pengguna.nik]|exact_length[5]', [
+		$this->form_validation->set_rules('nik', 'NIK', 'trim|numeric|required|is_unique[tb_pengguna.nik]|exact_length[16]', [
 			'required'	=> '*Tidak boleh kosong!',
 			'numeric'	=> '*Masukan angka!',
 			'is_unique'	=> '*NIK sudah terdaftar!',
-			'exact_length'=> '*NIK harus 5 digit!'
+			'exact_length'=> '*NIK harus 16 digit!'
 		]);
-		$this->form_validation->set_rules('no_kk', 'No.KK', 'trim|numeric|required|exact_length[5]', [
+		$this->form_validation->set_rules('no_kk', 'No.KK', 'trim|numeric|required|exact_length[16]', [
 			'required'	=> '*Tidak boleh kosong!',
 			'numeric'	=> '*Masukan angka!',			
-			'exact_length'=> '*No.KK harus 5 digit!'
+			'exact_length'=> '*No.KK harus 16 digit!'
 		]);
-		$this->form_validation->set_rules('no_telp', 'No.Telp', 'trim|numeric|required', [
+		$this->form_validation->set_rules('no_telp', 'No.Telp', 'trim|numeric|required|min_length[11]', [
 			'required'	=> '*Tidak boleh kosong!',
-			'numeric'	=> '*Masukan angka!'
+			'numeric'	=> '*Masukan angka!',
+			'min_length'=> '*Minimal 11 digit!'
 		]);		
 		$this->form_validation->set_rules('password1', 'Password', 'trim|required|min_length[3]|matches[password2]', [
 			'required'	=> '*Tidak boleh kosong!',
@@ -80,18 +81,18 @@ class User extends CI_Controller {
 					$this->load->view('template/v_wrapper', $data, FALSE);
 				} else {
 					$data = array(
-						'nama' => htmlspecialchars($this->input->post('nama', true)),
+						'nama' => strtoupper(htmlspecialchars($this->input->post('nama', true))),
 						'nik' => htmlspecialchars($this->input->post('nik', true)),
 						'no_kk' => htmlspecialchars($this->input->post('no_kk', true)),
 						'no_telp' => htmlspecialchars($this->input->post('no_telp', true)),
 						'email' => htmlspecialchars($this->input->post('email', true)),
 						'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
 						'email' => htmlspecialchars($this->input->post('email', true)), 
-						'tempat_lahir' => htmlspecialchars($this->input->post('tempat_lahir', true)),
+						'tempat_lahir' => strtoupper(htmlspecialchars($this->input->post('tempat_lahir', true))),
 						'tgl_lahir' => $this->input->post('tgl_lahir'),
 						'jk' => $this->input->post('jk'),
 						'asal_kec' => $this->input->post('asal_kec'),
-						'asal_desa' => htmlspecialchars($this->input->post('asal_desa', true)),
+						'asal_desa' => strtoupper(htmlspecialchars($this->input->post('asal_desa', true))),
 						'role_id' => $this->input->post('role_id'),
 						'is_active' => 1,				
 						'tgl_dibuat' => time(),
@@ -103,18 +104,18 @@ class User extends CI_Controller {
 				}				
 			} else {
 				$data = array(
-					'nama' => htmlspecialchars($this->input->post('nama', true)),
+					'nama' => strtoupper(htmlspecialchars($this->input->post('nama', true))),
 					'nik' => htmlspecialchars($this->input->post('nik', true)),
 					'no_kk' => htmlspecialchars($this->input->post('no_kk', true)),
 					'no_telp' => htmlspecialchars($this->input->post('no_telp', true)),
 					'email' => htmlspecialchars($this->input->post('email', true)),
 					'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
 					'email' => htmlspecialchars($this->input->post('email', true)), 
-					'tempat_lahir' => htmlspecialchars($this->input->post('tempat_lahir', true)),
+					'tempat_lahir' => strtoupper(htmlspecialchars($this->input->post('tempat_lahir', true))),
 					'tgl_lahir' => $this->input->post('tgl_lahir'),
 					'jk' => $this->input->post('jk'),
 					'asal_kec' => $this->input->post('asal_kec'),
-					'asal_desa' => htmlspecialchars($this->input->post('asal_desa', true)),
+					'asal_desa' => strtoupper(htmlspecialchars($this->input->post('asal_desa', true))),
 					'role_id' => $this->input->post('role_id'),
 					'is_active' => 1,				
 					'tgl_dibuat' => time(),
@@ -128,6 +129,10 @@ class User extends CI_Controller {
 	}	
 
 	public function edit($id) {
+		$role_id = $this->session->userdata('role_id');
+		if ($role_id != 1) {
+			redirect('auth/blocked');
+		}
 		$data = array(
 			'title' => 'Ubah Data Pengguna',
 			'isi' => 'user/v_edit',
@@ -143,22 +148,22 @@ class User extends CI_Controller {
 		$this->form_validation->set_rules('nama', 'Nama', 'required|trim', [
 			'required'	=> '*Tidak boleh kosong!'			
 		]);		
-		$this->form_validation->set_rules('nik', 'NIK', 'trim|numeric|required|exact_length[5]', [
+		$this->form_validation->set_rules('nik', 'NIK', 'trim|numeric|required|exact_length[16]', [
 			'required'	=> '*Tidak boleh kosong!',
 			'numeric'	=> '*Masukan angka!',			
-			'exact_length'=> '*NIK harus 5 digit!'
+			'exact_length'=> '*NIK harus 16 digit!'
 		]);
-		$this->form_validation->set_rules('no_kk', 'No.KK', 'trim|numeric|required|exact_length[5]', [
+		$this->form_validation->set_rules('no_kk', 'No.KK', 'trim|numeric|required|exact_length[16]', [
 			'required'	=> '*Tidak boleh kosong!',
 			'numeric'	=> '*Masukan angka!',			
-			'exact_length'=> '*No.KK harus 5 digit!'
+			'exact_length'=> '*No.KK harus 16 digit!'
 		]);
-		$this->form_validation->set_rules('no_telp', 'No.Telp', 'trim|numeric|required', [
+		$this->form_validation->set_rules('no_telp', 'No.Telp', 'trim|numeric|required|min_length[11]', [
 			'required'	=> '*Tidak boleh kosong!',
-			'numeric'	=> '*Masukan angka!'
+			'numeric'	=> '*Masukan angka!',
+			'min_length'=> '*Minimal 11 digit!'
 		]);
-		$this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email', [
-			'required'	=> '*Tidak boleh kosong!',
+		$this->form_validation->set_rules('email', 'Email', 'trim|valid_email', [			
 			'valid_email'=> '*Email tidak valid!'			
 		]);
 		$this->form_validation->set_rules('password1', 'Password', 'trim|required|min_length[3]|matches[password2]', [
@@ -200,17 +205,17 @@ class User extends CI_Controller {
 					$data = array(
 						'id' => $id,
 						'role_id' => $this->input->post('role_id'),
-						'nama' => htmlspecialchars($this->input->post('nama', true)),
+						'nama' => strtoupper(htmlspecialchars($this->input->post('nama', true))),
 						'nik' => htmlspecialchars($this->input->post('nik', true)),
 						'no_kk' => htmlspecialchars($this->input->post('no_kk', true)),
 						'no_telp' => htmlspecialchars($this->input->post('no_telp', true)),
 						'email' => htmlspecialchars($this->input->post('email', true)),
 						'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
-						'tempat_lahir' => htmlspecialchars($this->input->post('tempat_lahir', true)),
+						'tempat_lahir' => strtoupper(htmlspecialchars($this->input->post('tempat_lahir', true))),
 						'tgl_lahir' => $this->input->post('tgl_lahir'),
 						'jk' => $this->input->post('jk'),
 						'asal_kec' => $this->input->post('asal_kec'),
-						'asal_desa' => htmlspecialchars($this->input->post('asal_desa', true),)
+						'asal_desa' => strtoupper(htmlspecialchars($this->input->post('asal_desa', true)))
 					);
 					$this->m_user->edit($data);
 					$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Berhasil mengedit data!</div>');	
@@ -220,17 +225,17 @@ class User extends CI_Controller {
 				$data = array(
 					'id' => $id,
 					'role_id' => $this->input->post('role_id'),
-					'nama' => htmlspecialchars($this->input->post('nama', true)),
+					'nama' => strtoupper(htmlspecialchars($this->input->post('nama', true))),
 					'nik' => htmlspecialchars($this->input->post('nik', true)),
 					'no_kk' => htmlspecialchars($this->input->post('no_kk', true)),
 					'no_telp' => htmlspecialchars($this->input->post('no_telp', true)),
 					'email' => htmlspecialchars($this->input->post('email', true)),
 					'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
-					'tempat_lahir' => htmlspecialchars($this->input->post('tempat_lahir', true)),
+					'tempat_lahir' => strtoupper(htmlspecialchars($this->input->post('tempat_lahir', true))),
 					'tgl_lahir' => $this->input->post('tgl_lahir'),
 					'jk' => $this->input->post('jk'),
 					'asal_kec' => $this->input->post('asal_kec'),
-					'asal_desa' => htmlspecialchars($this->input->post('asal_desa', true))
+					'asal_desa' => strtoupper(htmlspecialchars($this->input->post('asal_desa', true)))
 				);
 				$this->m_user->edit($data);
 				$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Berhasil mengedit data!</div>');	
@@ -241,6 +246,10 @@ class User extends CI_Controller {
 	}
 
 	public function delete($id) {
+		$role_id = $this->session->userdata('role_id');
+		if ($role_id != 1) {
+			redirect('auth/blocked');
+		}
 		$data = array(
 			'id' => $id
 		);		
@@ -257,12 +266,17 @@ class User extends CI_Controller {
 			'user' => $this->db->get_where('tb_pengguna', ['nik' => $this->session->userdata('nik')])->row_array(),
 			'profile' => $this->m_user->profile($id),
 			'kecamatan' => $this->m_user->kecamatan(),	
-			'map'	=> $this->googlemaps->create_map()
+			'map'	=> $this->googlemaps->create_map(),
+			'umkm' => $this->m_user->umkm($id)
 		);
 		$this->load->view('template/v_wrapper', $data, FALSE);
 
 	}
 	public function updateProfile() {
+		$role_id = $this->session->userdata('role_id');
+		if ($role_id != 1) {
+			redirect('auth/blocked');
+		}
 		$data = array(
 			'title' => 'Nyoba Datepicker!',
 			'user' => $this->db->get_where('tb_pengguna', ['nik' => $this->session->userdata('nik')])->row_array()	,

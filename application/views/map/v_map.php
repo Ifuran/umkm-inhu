@@ -47,7 +47,8 @@
 
           // styling geojson
           map.data.setStyle({
-            fillColor: 'blue',        
+            fillColor: 'blue',
+            fillOpcaity: 0.1,        
             strokeWeight: 1
           });
 
@@ -67,6 +68,7 @@
                   "<img src='<?= base_url('template/img/umkm/'.$value->gambar) ?>' width='250px' height='120px'>" +
                   "<h4>Usaha <?= $value->user ?></h4>" +
                   "<h5>Alamat : <?= $value->umkm_desa ?></h5>" +
+                  "<h5>Kecamatan : <?= $value->kecamatan ?></h5>" +
                   "<h5>Sektor : <?= $value->sektor ?></h5>" +
                   "<a href='<?= base_url('umkm/detail/'.$value->id_umkm) ?>'style='border:1px solid grey;margin-right:2px;' class='btn btn-default m-2'>Detail</a>" +              
                   "<a href='<?= base_url('map/rute/'.$value->id_umkm) ?>' class='btn btn-primary'>Rute</a>"

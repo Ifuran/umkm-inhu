@@ -70,15 +70,6 @@
                 }
                 ?>  
                 <form method="post" action="<?= base_url('auth/registration') ?>">
-                    <div class="form-group">            
-                        <label>Role Pengguna</label>
-                        <?= form_error('role_id', '<small class="text-danger pl-3">', '</small>') ?>
-                        <select class="form-control" name="role_id">
-                            <option value="">---Pilih Role---</option>
-                            <option value="2" <?= set_select('role_id', '2') ?>>Pengguna Biasa</option>
-                            <option value="3" <?= set_select('role_id', '3') ?>>Pelaku Usaha</option>
-                        </select>
-                    </div>
                     <div class="form-group">               
                         <label>Nama Lengkap</label>
                         <?= form_error('nama', '<small class="text-danger pl-3">', '</small>') ?>
@@ -138,8 +129,8 @@
                         <?= form_error('jk', '<small class="text-danger pl-3">', '</small>') ?>
                         <select class="form-control" name="jk">
                             <option value="">---Pilih Jenis Kelamin---</option>
-                            <option value="Laki-Laki">Laki-Laki</option>             
-                            <option value="Perempuan">Perempuan</option>
+                            <option value="Laki-Laki" <?= set_select('jk', 'Laki-Laki') ?>>Laki-Laki</option>             
+                      <option value="Perempuan" <?= set_select('jk', 'Perempuan') ?>>Perempuan</option>
                         </select>
                     </div>
                     <div class="form-group">               
@@ -148,24 +139,24 @@
                         <select class="form-control" name="asal_kec" id="asal_kec">
                             <option value="">---Pilih Alamat Kecamatan---</option>
                             <?php foreach ($kecamatan as $key => $value) { ?>              
-                              <option value="<?= $value->id ?>"><?= $value->nama ?></option>
-                          <?php } ?>
-                      </select>
-                  </div>
-                  <div class="form-group">               
-                    <label>Alamat Lengkap</label>
-                    <?= form_error('asal_desa', '<small class="text-danger pl-3">', '</small>') ?>
-                    <input type="text" class="form-control" id="asal_desa" name="asal_desa"
-                    placeholder="Alamat lengkap.." value="<?= set_value('asal_desa') ?>">
-                </div>
-                <button class="btn btn-block btn-primary btn-sm" type="submit">Buat Akun</button>
-                <div class="text-center">
-                    <a href="<?= base_url('auth') ?>" class="btn">Sudah punya akun?</a>
-                </div>
-            </form> 
+                                <option value="<?= $value->id ?>" <?= set_select('asal_kec', $value->id) ?>><?= $value->nama ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div class="form-group">               
+                        <label>Alamat Lengkap</label>
+                        <?= form_error('asal_desa', '<small class="text-danger pl-3">', '</small>') ?>
+                        <input type="text" class="form-control" id="asal_desa" name="asal_desa"
+                        placeholder="Alamat lengkap.." value="<?= set_value('asal_desa') ?>">
+                    </div>
+                    <button class="btn btn-block btn-primary btn-sm" type="submit">Buat Akun</button>
+                    <div class="text-center">
+                        <a href="<?= base_url('auth') ?>" class="btn">Sudah punya akun?</a>
+                    </div>
+                </form> 
+            </div>
         </div>
-    </div>
-</div>    
+    </div>    
 </div>
 </div>
 </div>

@@ -89,7 +89,18 @@
         </div>
       </div>  
     </div>    
-    <!-- /.row -->
+    <!-- /.row -->            
+    </div>
+    <div class="info-detail text-center" style="background: #394867; color: #fff; padding: 50px;">    
+      <div class="row">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">
+          <h4 class="text-bold">Dinas Koperasi Usaha Kecil dan Menengah Kabupaten Indragiri Hulu</h4>
+          <img src="<?= base_url('template/img/koperasi-inhu.png') ?>" style="width: 25%;object-fit: cover;border-radius: 20%;">              
+          <p>Alamat: JC3P+RR3, Pematang Reba, Kec. Rengat Bar., Kabupaten Indragiri Hulu, Riau 29351</p>
+          <p>Beroperasi dari hari Senin-Jumat Pukul 08.00 sampai 16.00</p>
+        </div>      
+      </div>
   </div>    
   <footer class="sticky-footer" style="background: #212A3E; color: #fff; padding: 25px;">
     <div class="container">
@@ -137,6 +148,7 @@
           "<img src='<?= base_url('template/img/umkm/'.$value->gambar) ?>' width='250px' height='120px'>" +
           "<h4>Usaha <?= $value->user ?></h4>" +
           "<h5>Alamat : <?= $value->umkm_desa ?></h5>" +
+          "<h5>Kecamatan : <?= $value->kecamatan ?></h5>" +
           "<h5>Sektor : <?= $value->sektor ?></h5>" +
           "<a href='<?= base_url('home/detail/'.$value->id_umkm) ?>'style='border:1px solid grey;margin-right:2px;' class='btn btn-default m-2'>Detail</a>" +              
           "<a href='<?= base_url('map/rute/'.$value->id_umkm) ?>' class='btn btn-primary'>Rute</a>"

@@ -14,15 +14,12 @@
             <!-- /.panel-heading -->
             <div class="panel-body"> 
               <?php if ($this->session->userdata('role_id') == 1) { ?>
-                <a href="#" class="btn btn-primary btn-sm mb-3" data-toggle="modal" data-target="#addModal"><i class="fa fa-plus"></i> Tambah</a>
+                <a href="#" onclick="initMap()" class="btn btn-primary btn-sm mb-3" data-toggle="modal" data-target="#addModal"><i class="fa fa-plus"></i> Tambah</a>
                 <a href="umkm/verifikasi" class="btn btn-primary btn-sm mb-3"><i class="fa fa-check-square"></i> Verifikasi Pendaftaran</a>
               <?php } ?> 
-              <?php if ($this->session->userdata('role_id') == 3) { ?>
-                <a href="#" class="btn btn-primary btn-sm mb-3" ><i class="fa fa-clipboard"></i> Daftar Usaha</a>
-              <?php } ?>
-              <?php if ($this->session->userdata('role_id') == 2) { ?>
-                <a href="#" class="btn btn-primary btn-sm mb-3" ><i class="fa fa-clipboard"></i> Daftar Pelaku Usaha</a>
-              <?php } ?>
+              <?php if ($this->session->userdata('role_id') != 1) { ?>
+                <a href="<?= base_url('umkm/registration') ?>" class="btn btn-primary btn-sm mb-3" ><i class="fa fa-clipboard"></i> Daftarkan Usaha Anda</a>
+              <?php } ?>              
               <div><br></div>               
               <?= form_error('nama', '<div class="alert alert-danger" role="alert">', '</div>'); ?>
               <?= $this->session->flashdata('message'); ?>     
@@ -88,7 +85,7 @@
               <div class="panel-body">                
                 <form class="user" method="post" action="<?= base_url('umkm') ?>" enctype="multipart/form-data">
                   <div class="form-group">
-                    <label>Role Pengguna</label>
+                    <label>Pengguna</label>
                     <?= form_error('id_pengguna', '<small class="text-danger pl-3">', '</small>') ?>
                     <select class="form-control" name="id_pengguna" id="id_pengguna">
                       <option value="">---Pilih Pengguna---</option>
@@ -138,13 +135,17 @@
                     <label>Latitude</label>
                     <?= form_error('umkm_lat', '<small class="text-danger pl-3">', '</small>') ?>
                     <input type="text" class="form-control" id="umkm_lat" name="umkm_lat"
-                    placeholder="Latitude" value="<?= set_value('umkm_lat') ?>">
+                    placeholder="Latitude" value="<?= set_value('umkm_lat') ?>" readonly>
                   </div>
                   <div class="form-group">
                     <label>Longitude</label>
                     <?= form_error('umkm_lon', '<small class="text-danger pl-3">', '</small>') ?>
                     <input type="text" class="form-control" id="umkm_lon" name="umkm_lon"
-                    placeholder="Longitude" value="<?= set_value('umkm_lon') ?>">
+                    placeholder="Longitude" value="<?= set_value('umkm_lon') ?>" readonly>
+                  </div>
+                  <div class="form-group">
+                    <label>Geser marker untuk menentukan lokasi</label>
+                    <div id="map" style="height: 300px"></div>                    
                   </div>
                   <div class="form-group">
                     <label>Gambar Usaha</label>
@@ -160,5 +161,46 @@
               </div>   
             </div>
           </div>
-        </div>
+          <script type="text/javascript"> 
+            function initMap() {
+              var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 9,
+                center: new google.maps.LatLng( -0.565098, 102.299790),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+              });
+
+          // menampilkan geosjon
+          <?php foreach ($geojson as $key => $value) { ?>
+            map.data.loadGeoJson(
+              "<?= base_url('geojson/'.$value->geojson) ?>"
+              );
+            map.data.loadGeoJson(
+              "<?= base_url('geojson/'.$value->geojson) ?>"
+              );
+          <?php } ?>
+
+          // styling geojson
+          map.data.setStyle({
+            fillColor: 'green',        
+            strokeWeight: 1
+          });
+
+          var marker = new google.maps.Marker({
+            draggable: true,        
+            position: { lat:  -0.565098, lng: 102.299790 },
+            map: map
+          });
+
+          google.maps.event.addListener(marker, 'dragend', function (evt) {
+            document.getElementById('umkm_lat').value = evt.latLng.lat().toFixed(3);
+            document.getElementById('umkm_lon').value = evt.latLng.lng().toFixed(3);
+          });
+          google.maps.event.addListener(marker, 'dragstart', function (evt) {
+            document.getElementById('umkm_lat').value = 'Sedang memilih lokasi...';
+            document.getElementById('umkm_lon').value = 'Sedang memilih lokasi...';
+
+          });           
+        }                                               
+      </script>
+        </div>        
 <!-- End of Main Content -->

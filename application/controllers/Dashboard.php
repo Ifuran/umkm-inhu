@@ -9,6 +9,10 @@ class Dashboard extends CI_Controller {
 		$this->load->model('m_dashboard');
 		$this->load->library('googlemaps');
 		check_login();
+		$role_id = $this->session->userdata('role_id');
+		if ($role_id != 1) {
+			redirect('auth/blocked');
+		}	
 	}
 
 	public function index()
