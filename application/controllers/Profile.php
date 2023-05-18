@@ -168,7 +168,11 @@ class Profile extends CI_Controller {
 	}
 
 	public function editUsaha($id) {
-
+		$pemilik = $this->m_profile->usaha($id);
+		$user = $this->session->userdata('id');
+		if ($user != $pemilik->id_pengguna) {
+			redirect('auth/blocked');
+		}
 		// tambahin hak akses
 		$data = array(
 			'title' => 'Ubah Data UMKM',

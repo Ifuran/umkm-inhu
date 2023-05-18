@@ -20,8 +20,10 @@
               <p class="card-text">
                 <small class="text-muted">Terdaftar saat <?= date('d F Y', $user['tgl_dibuat']); ?>
               </small></p>
+              <?php if ($this->session->userdata('role_id') != 1) { ?>
               <a href="<?= base_url('user/detail/'.$user['id']) ?>" class="btn btn-sm btn-default text-end"><i class="fa fa-user fa-fw"></i> Lihat Profil</a>
               <a href="<?= base_url('profile/edit') ?>" class="btn btn-sm btn-default text-end"><i class="fa fa-pencil fa-fw"></i> Edit Profil</a>
+              <?php } ?> 
               <a href="<?= base_url('profile/changePassword') ?>" class="btn btn-sm btn-default flex-end"><i class="fa fa-key fa-fw"></i></i> Ubah Password</a>
             </div>
           </div>

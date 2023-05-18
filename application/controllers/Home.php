@@ -18,6 +18,7 @@ class Home extends CI_Controller {
 			'map'	=> $this->googlemaps->create_map(),	
 			'kecamatan' => $this->m_map->kecamatan(),
 			'umkm'  => $this->m_map->umkm(),
+			'sektor' => $this->m_umkm->sektor(),
 			'geojson'  => $this->m_map->geojson(),
 			'jlh_users' => $this->m_dashboard->users(),
 			'jlh_pelaku_usaha' => $this->m_dashboard->pelaku_usaha(),

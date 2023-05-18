@@ -57,32 +57,36 @@
             <div class="col-sm-6">
               <div class="panel panel-primary">
                 <div class="panel-heading">
-                  Form Lupa Password
+                  Form Aktivasi
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body">
-                    <?= $this->session->flashdata('message'); ?>  
-                    <form method="post" action="<?= base_url('auth/forgotPassword') ?>"  class="user">
-                        <div class="form-group">
-                            <?= form_error('email', '<small class="text-danger pl-3">', '</small>') ?>
-                            <input type="text" class="form-control"
-                            id="email" name="email" value="<?= set_value('email'); ?>" 
-                            placeholder="Masukan Email...">
-                        </div>                                                            
-                        <button type="submit" class="btn btn-primary btn-user btn-block">Reset Password</button>                                        
-                        <div class="text-center">
-                            <a class="btn" href="<?= base_url('auth'); ?>">Halaman Login</a>
-                        </div>
-                    </form> 
-                </div>
+                  <?= $this->session->flashdata('message'); ?>  
+                  <form method="post" action="<?= base_url('auth/activation') ?>">
+                    <div class="form-group">            
+                      <label>NIK</label>
+                      <?= form_error('nik', '<small class="text-danger pl-3">', '</small>') ?>
+                      <input type="text" class="form-control" id="nik" name="nik" value="<?= set_value('nik'); ?>" placeholder="Masukan NIK">
+                    </div>    
+                    <div class="form-group">            
+                      <label>Email</label>
+                      <?= form_error('email', '<small class="text-danger pl-3">', '</small>') ?>
+                      <input type="text" class="form-control" id="email" name="email" value="<?= set_value('email'); ?>" placeholder="Masukan Email">
+                    </div>                                                       
+                   <button class="btn btn-block btn-primary" type="submit">Aktivasi</button>
+                   <div class="text-center">                    
+                    <a href="<?= base_url('auth/registration') ?>" class="btn">Buat akun!</a>
+                  </div>
+                </form> 
+              </div>
             </div>
+          </div>
+          <!-- /.col-lg-12 -->
         </div>
-        <!-- /.col-lg-12 -->
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
     </div>
-    <!-- /.row -->
-</div>
-<!-- /.container-fluid -->
-</div>
     <!-- /#page-wrapper -->
 
   </div>

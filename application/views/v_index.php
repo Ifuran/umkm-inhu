@@ -101,7 +101,7 @@
           <p>Beroperasi dari hari Senin-Jumat Pukul 08.00 sampai 16.00</p>
         </div>      
       </div>
-  </div>    
+  </div>      
   <footer class="sticky-footer" style="background: #212A3E; color: #fff; padding: 25px;">
     <div class="container">
       <div class="copyright text-center">
@@ -109,7 +109,7 @@
       </div>
     </div>
   </footer>
-  <script type="text/javascript">              
+  <script type="text/javascript">                
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 10,
     center: new google.maps.LatLng( -0.565098, 102.299790),
@@ -130,23 +130,65 @@
   map.data.setStyle({
     fillColor: 'blue',        
     strokeWeight: 1
-  });
+  });        
+  
+
 
   var infowindow = new google.maps.InfoWindow();
-  var marker, i;
+  var marker;    
+
+  var icon = {    
+    1: {
+      url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+      scaledSize: new google.maps.Size(30, 30),
+    },
+    2: {
+      url: "http://maps.google.com/mapfiles/ms/icons/tree.png",
+      scaledSize: new google.maps.Size(30, 30),
+    },
+    3: {
+      url: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png",
+      scaledSize: new google.maps.Size(30, 30),
+    },
+    4: {
+      url: "http://maps.google.com/mapfiles/ms/icons/mechanic.png",
+      scaledSize: new google.maps.Size(30, 30),
+    },
+    5: {
+      url: "http://maps.google.com/mapfiles/ms/icons/cabs.png",
+      scaledSize: new google.maps.Size(30, 30),
+    },
+    6: {
+      url: "http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png",
+      scaledSize: new google.maps.Size(30, 30),
+    },
+    7: {
+      url: "http://maps.google.com/mapfiles/ms/icons/brown-dot.png",
+      scaledSize: new google.maps.Size(30, 30),
+    },
+    8: {
+      url: "http://maps.google.com/mapfiles/ms/icons/homegardenbusiness.png",
+      scaledSize: new google.maps.Size(25, 25),
+    },
+    9: {
+      url: "http://maps.google.com/mapfiles/ms/icons/dollar.png",
+      scaledSize: new google.maps.Size(30, 30),      
+    },
+  };
 
   <?php foreach ($umkm as $key => $value) { ?>
     marker = new google.maps.Marker({
       position: new google.maps.LatLng(<?= $value->umkm_lat ?>, <?= $value->umkm_lon ?>),
       map: map,
+      icon: icon[<?= $value->id_sektor ?>],      
       animation: google.maps.Animation.DROP
     }); 
 
-    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+    google.maps.event.addListener(marker, 'click', (function(marker) {
       return function() {
         infowindow.setContent(
           "<img src='<?= base_url('template/img/umkm/'.$value->gambar) ?>' width='250px' height='120px'>" +
-          "<h4>Usaha <?= $value->user ?></h4>" +
+          "<h4>USAHA <?= $value->user ?></h4>" +
           "<h5>Alamat : <?= $value->umkm_desa ?></h5>" +
           "<h5>Kecamatan : <?= $value->kecamatan ?></h5>" +
           "<h5>Sektor : <?= $value->sektor ?></h5>" +
@@ -155,7 +197,30 @@
           );
         infowindow.open(map, marker);
       }
-    })(marker, i));           
+    })(marker));           
   <?php } ?>
-                      
+
+
+  var infowindowKecamatan = new google.maps.InfoWindow();
+  var markerKecamatan;
+  const imageKecamatan = "https://developers.google.com/maps/documentation/javascript/examples/full/images/info-i_maps.png";
+
+  <?php foreach ($kecamatan as $key => $value) { ?>
+    markerKecamatan = new google.maps.Marker({
+      position: new google.maps.LatLng(<?= $value->kec_lat ?>, <?= $value->kec_lon ?>),
+      map: map,
+      icon: imageKecamatan,
+      title: "Kecamatan <?= $value->nama ?>",
+      animation: google.maps.Animation.DROP
+    });
+
+    google.maps.event.addListener(markerKecamatan, 'click', (function(markerKecamatan) {
+      return function() {
+        infowindowKecamatan.setContent(          
+          "<h4>Kecamatan <?= $value->nama ?></h4>" 
+          );
+        infowindowKecamatan.open(map, markerKecamatan);
+      }
+    })(markerKecamatan));
+  <?php } ?>
 </script> 

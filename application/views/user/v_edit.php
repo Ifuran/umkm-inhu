@@ -23,6 +23,15 @@
                     <option value="3" <?php if($profile->role_id == '3'){ echo 'selected'; } ?>>Pelaku Usaha</option>
                   </select>                          
                 </div>
+                <div class="form-group">            
+                    <label>Status Akun</label>
+                    <?= form_error('is_active', '<small class="text-danger pl-3">', '</small>') ?>
+                    <select class="form-control" name="is_active" id="is_active">
+                      <option value="">---Pilih Status Akun---</option>
+                      <option value="1" <?php if($profile->is_active == '1'){ echo 'selected'; } ?>>Sudah Aktivasi</option>
+                      <option value="0" <?php if($profile->is_active == '0'){ echo 'selected'; } ?>>Belum Aktivasi</option>
+                    </select>
+                  </div>
                 <div class="form-group">                             
                   <?= form_error('nama', '<small class="text-danger">', '</small>') ?>
                   <label for="nama" class="col-sm-3">Nama</label>
@@ -77,7 +86,7 @@
                 </div>                                                    
                 <div class="form-group">
                   <?= form_error('jk', '<small class="text-danger">', '</small>') ?>
-                  <label for="jk" class="col-sm-3">Jenis kelamin</label>      
+                  <label for="jk" class="col-sm-4">Jenis kelamin</label>      
                   <select name="jk" class="form-control col">
                     <option value="Laki-laki" <?php if($profile->jk == 'Laki-Laki'){ echo 'selected'; } ?>>Laki-Laki</option>
                     <option value="Perempuan" <?php if($profile->jk == 'Perempuan'){ echo 'selected'; } ?>>Perempuan</option>

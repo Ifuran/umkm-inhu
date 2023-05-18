@@ -91,42 +91,65 @@
         </div>
         <script type="text/javascript"> 
             
-          var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 9,
-            center: new google.maps.LatLng( -0.565098, 102.299790),
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 9,
+                center: new google.maps.LatLng( -0.565098, 102.299790),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
 
-          // menampilkan geosjon
-          <?php foreach ($geojson as $key => $value) { ?>
-            map.data.loadGeoJson(
-              "<?= base_url('geojson/'.$value->geojson) ?>"
-              );
-            map.data.loadGeoJson(
-              "<?= base_url('geojson/'.$value->geojson) ?>"
-              );
-        <?php } ?>
+            // menampilkan geosjon
+            <?php foreach ($geojson as $key => $value) { ?>
+                map.data.loadGeoJson(
+                  "<?= base_url('geojson/'.$value->geojson) ?>"
+                  );
+                map.data.loadGeoJson(
+                  "<?= base_url('geojson/'.$value->geojson) ?>"
+                  );
+            <?php } ?>
 
-          // styling geojson
-          map.data.setStyle({
-            fillColor: 'green',        
-            strokeWeight: 1
-        });
+            // styling geojson
+            map.data.setStyle({
+                fillColor: 'green',        
+                strokeWeight: 1
+            });
 
-          var marker = new google.maps.Marker({
-            draggable: true,        
-            position: { lat:  -0.565098, lng: 102.299790 },
-            map: map
-        });
+            var infowindowKecamatan = new google.maps.InfoWindow();
+            var markerKecamatan;
+            const imageKecamatan = "https://developers.google.com/maps/documentation/javascript/examples/full/images/info-i_maps.png";
 
-          google.maps.event.addListener(marker, 'dragend', function (evt) {
-            document.getElementById('umkm_lat').value = evt.latLng.lat().toFixed(3);
-            document.getElementById('umkm_lon').value = evt.latLng.lng().toFixed(3);
-        });
-          google.maps.event.addListener(marker, 'dragstart', function (evt) {
-            document.getElementById('umkm_lat').value = 'Sedang memilih lokasi...';
-            document.getElementById('umkm_lon').value = 'Sedang memilih lokasi...';
+            <?php foreach ($kecamatan as $key => $value) { ?>
+                markerKecamatan = new google.maps.Marker({
+                  position: new google.maps.LatLng(<?= $value->kec_lat ?>, <?= $value->kec_lon ?>),
+                  map: map,
+                  icon: imageKecamatan,
+                  title: "Kecamatan <?= $value->nama ?>",
+                  animation: google.maps.Animation.DROP
+              });
 
-        });           
+                google.maps.event.addListener(markerKecamatan, 'click', (function(markerKecamatan) {
+                  return function() {
+                    infowindowKecamatan.setContent(          
+                      "<h4>Kecamatan <?= $value->nama ?></h4>" 
+                      );
+                    infowindowKecamatan.open(map, markerKecamatan);
+                }
+            })(markerKecamatan));
+            <?php } ?>
+
+            var marker = new google.maps.Marker({
+                draggable: true,        
+                position: { lat:  <?= $profile->umkm_lat ?>, lng: <?= $profile->umkm_lon ?> },
+                map: map
+            });
+
+            google.maps.event.addListener(marker, 'dragend', function (evt) {
+                document.getElementById('umkm_lat').value = evt.latLng.lat().toFixed(3);
+                document.getElementById('umkm_lon').value = evt.latLng.lng().toFixed(3);
+            });
+            google.maps.event.addListener(marker, 'dragstart', function (evt) {
+                document.getElementById('umkm_lat').value = 'Sedang memilih lokasi...';
+                document.getElementById('umkm_lon').value = 'Sedang memilih lokasi...';
+
+            });           
                                                    
       </script>

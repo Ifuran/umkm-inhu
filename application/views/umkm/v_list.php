@@ -185,6 +185,29 @@
             strokeWeight: 1
           });
 
+          var infowindowKecamatan = new google.maps.InfoWindow();
+          var markerKecamatan;
+          const imageKecamatan = "https://developers.google.com/maps/documentation/javascript/examples/full/images/info-i_maps.png";
+
+          <?php foreach ($kecamatan as $key => $value) { ?>
+            markerKecamatan = new google.maps.Marker({
+              position: new google.maps.LatLng(<?= $value->kec_lat ?>, <?= $value->kec_lon ?>),
+              map: map,
+              icon: imageKecamatan,
+              title: "Kecamatan <?= $value->nama ?>",
+              animation: google.maps.Animation.DROP
+            });
+
+            google.maps.event.addListener(markerKecamatan, 'click', (function(markerKecamatan) {
+              return function() {
+                infowindowKecamatan.setContent(          
+                  "<h4>Kecamatan <?= $value->nama ?></h4>" 
+                  );
+                infowindowKecamatan.open(map, markerKecamatan);
+              }
+            })(markerKecamatan));
+          <?php } ?>
+
           var marker = new google.maps.Marker({
             draggable: true,        
             position: { lat:  -0.565098, lng: 102.299790 },

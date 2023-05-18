@@ -27,7 +27,7 @@
                         <td><a href="<?= base_url('user/detail/').$profile->id_pengguna ?>"><?= $profile->user ?></a></td>      
                       </tr>
                       <tr>
-                        <th scope="row">Alamat</th>
+                        <th scope="row">Alamat, RT/RW</th>
                         <td><?= $profile->umkm_desa ?></td>      
                       </tr>
                       <tr>

@@ -26,6 +26,9 @@ class User extends CI_Controller {
 
 		$this->form_validation->set_rules('role_id', 'Role Pengguna', 'required|trim', [
 			'required'	=> '*Tidak boleh kosong!'			
+		]);
+		$this->form_validation->set_rules('is_active', 'Status Akun', 'required|trim', [
+			'required'	=> '*Tidak boleh kosong!'			
 		]);	
 		$this->form_validation->set_rules('nama', 'Nama', 'required|trim', [
 			'required'	=> '*Tidak boleh kosong!'			
@@ -94,7 +97,7 @@ class User extends CI_Controller {
 						'asal_kec' => $this->input->post('asal_kec'),
 						'asal_desa' => strtoupper(htmlspecialchars($this->input->post('asal_desa', true))),
 						'role_id' => $this->input->post('role_id'),
-						'is_active' => 1,				
+						'is_active' => $this->input->post('is_active'),				
 						'tgl_dibuat' => time(),
 						'foto' => 'default.png'
 					);
@@ -117,7 +120,7 @@ class User extends CI_Controller {
 					'asal_kec' => $this->input->post('asal_kec'),
 					'asal_desa' => strtoupper(htmlspecialchars($this->input->post('asal_desa', true))),
 					'role_id' => $this->input->post('role_id'),
-					'is_active' => 1,				
+					'is_active' => $this->input->post('is_active'),								
 					'tgl_dibuat' => time(),
 					'foto' => 'default.png'
 				);
@@ -143,6 +146,9 @@ class User extends CI_Controller {
 		);
 
 		$this->form_validation->set_rules('role_id', 'Role Pengguna', 'required|trim', [
+			'required'	=> '*Tidak boleh kosong!'			
+		]);
+		$this->form_validation->set_rules('is_active', 'Status Akun', 'required|trim', [
 			'required'	=> '*Tidak boleh kosong!'			
 		]);
 		$this->form_validation->set_rules('nama', 'Nama', 'required|trim', [
@@ -205,6 +211,7 @@ class User extends CI_Controller {
 					$data = array(
 						'id' => $id,
 						'role_id' => $this->input->post('role_id'),
+						'is_active' => $this->input->post('is_active'),				
 						'nama' => strtoupper(htmlspecialchars($this->input->post('nama', true))),
 						'nik' => htmlspecialchars($this->input->post('nik', true)),
 						'no_kk' => htmlspecialchars($this->input->post('no_kk', true)),
@@ -225,6 +232,7 @@ class User extends CI_Controller {
 				$data = array(
 					'id' => $id,
 					'role_id' => $this->input->post('role_id'),
+					'is_active' => $this->input->post('is_active'),				
 					'nama' => strtoupper(htmlspecialchars($this->input->post('nama', true))),
 					'nik' => htmlspecialchars($this->input->post('nik', true)),
 					'no_kk' => htmlspecialchars($this->input->post('no_kk', true)),
@@ -260,6 +268,10 @@ class User extends CI_Controller {
 	}
 
 	public function detail($id) {
+		$cek = $this->m_user->profile($id);
+		if (!$cek || $cek->role_id == 1) {			
+			redirect('auth/pageNotFound');
+		}
 		$data = array(
 			'title' => 'Data Diri Pengguna',
 			'isi' => 'user/v_detail',			

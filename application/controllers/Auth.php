@@ -53,8 +53,8 @@ class Auth extends CI_Controller {
 						$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Password salah!</div>');
 						redirect('auth');
 					}
-				} else {
-					$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Akun belum diaktifkan!</div>');
+				} else {					
+					$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Akun belum diaktifkan! Klik <a href="auth/activation">di sini</a> untuk aktifkan</div>');
 					redirect('auth');
 				}
 			} else {
@@ -173,7 +173,11 @@ class Auth extends CI_Controller {
 			$this->email->message('Klik link berikut untuk verifikasi akun Anda : '.base_url().'auth/verify?email='.$this->input->post('email').'&token='. urlencode($token));
 		} else if($type == 'forgot') {
 			$this->email->subject('Reset Password Akun');			
-			$this->email->message('Klik link berikut untuk reset password akun Anda : '.base_url().'auth/resetpassword?email='.$this->input->post('email').'&token='. urlencode($token));
+			$this->email->message('Klik link berikut untuk reset password akun Anda : '.base_url().'auth/resetPassword?email='.$this->input->post('email').'&token='. urlencode($token));
+		} 
+		else if($type == 'active') {
+			$this->email->subject('Aktivasi Akun');			
+			$this->email->message('Klik link berikut untuk aktivasi akun Anda : '.base_url().'auth/active?email='.$this->input->post('email').'&token='. urlencode($token).'&nik='. $this->input->post('nik'));
 		}
 		
 		if ($this->email->send()) {
@@ -256,16 +260,19 @@ class Auth extends CI_Controller {
 		$this->load->view('template/v_blocked', $data);
 	}
 
+	public function pageNotFound() {
+		$data['title'] = 'Halaman Tidak Ditemukan';		
+		$this->load->view('template/v_404', $data);
+	}
+
 	public function forgotPassword() {
 		$this->form_validation->set_rules('email', 'fieldlabel', 'trim|required|valid_email', [
 			'required'	=> '*Tidak boleh kosong!',
 			'valid_email'=> '*Email tidak valid!'			
 		]);
 		if ($this->form_validation->run() == FALSE) {
-			$data['title'] = 'Halaman Lupa Password';
-			$this->load->view('templates/v_login_header', $data);
-			$this->load->view('auth/v_forgotPassword');
-			$this->load->view('templates/v_login_footer');
+			$data['title'] = 'Halaman Lupa Password';			
+			$this->load->view('auth/v_forgotPassword', $data);			
 		} else {
 			$email = $this->input->post('email');
 			$user = $this->db->get_where('tb_pengguna', ['email' => $email, 'is_active' => 1])->row_array();
@@ -293,7 +300,7 @@ class Auth extends CI_Controller {
 		if (!$this->session->userdata('reset_email')) {
 			redirect('auth');
 		}
-		$this->form_validation->set_rules('password1', 'Password', 'trim|required|min_length[3]|matches[password2]', [
+		$this->form_validation->set_rules('password1', 'Password', 'trim|required|min_length[5]|matches[password2]', [
 			'required'	=> '*Tidak boleh kosong!',
 			'matches'	=> '*Password harus sama',
 			'min_length'=> '*Password terlalu pendek'
@@ -302,10 +309,8 @@ class Auth extends CI_Controller {
 			'matches'	=> '*Password harus sama dengan yang di atas'
 		]);
 		if ($this->form_validation->run() == FALSE) {
-			$data['title'] = 'Halaman Ubah Password';
-			$this->load->view('templates/v_login_header', $data);
-			$this->load->view('auth/v_changePassword');
-			$this->load->view('templates/v_login_footer');
+			$data['title'] = 'Halaman Ubah Password';			
+			$this->load->view('auth/v_changePassword', $data);			
 		} else {
 			$password = password_hash($this->input->post('password1'), PASSWORD_DEFAULT);
 			$email = $this->session->userdata('reset_email');
@@ -321,6 +326,82 @@ class Auth extends CI_Controller {
 			redirect('auth');
 		}
 		
+	}
+
+	public function activation() {
+		$this->form_validation->set_rules('nik', 'NIK', 'trim|required|exact_length[16]', [
+			'required'	=> '*Tidak boleh kosong!',
+			'exact_length'	=> '*Harus 16 digit!'
+		]);
+		$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[tb_pengguna.email]', [
+			'required'	=> '*Tidak boleh kosong!',
+			'valid_email'	=> '*Email tidak valid!',
+			'is_unique' => '*Email sudah terdaftar!'
+		]);
+		if ($this->form_validation->run() == FALSE) {
+			$data['title'] = 'Halaman Aktivasi';			
+			$this->load->view('auth/v_activation', $data, FALSE);			
+		} else {
+			$nik = $this->input->post('nik');
+			$email = $this->input->post('email');						
+			$user = $this->db->get_where('tb_pengguna', ['nik' => $nik])->row_array();
+			if ($user) {
+				if (!$user['email']) {					
+					$token = base64_encode(random_bytes(32));			
+					$user_token = array(
+						'email' => $this->input->post('email', true),
+						'token' => $token,
+						'tgl_dibuat' => time()
+					);
+					
+					$this->db->insert('tb_token', $user_token);
+
+					$this->_sendEmail($token, 'active');
+					$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Silahkan aktivasi melalui Email!</div>');
+			redirect('auth');
+				} else {
+					$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Akun dengan Email ini telah aktif!.</div>');
+					redirect('auth/activation');
+				}								
+			} else {
+				$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">NIK tidak terdaftar!.</div>');
+				redirect('auth/activation');
+			} 	
+			
+		}
+	}
+
+	public function active() {
+		$nik = $this->input->get('nik');		
+		$email = $this->input->get('email');
+		$token = $this->input->get('token');		
+
+		$user = $this->db->get_where('tb_pengguna', ['nik' => $nik])->row_array();
+
+		if ($user) {
+			$user_token = $this->db->get_where('tb_token', ['token' => $token])->row_array();	
+			if ($user_token) {
+				if (time() - $user_token['tgl_dibuat'] < (60*60*24)) {
+					$this->db->set('is_active', 1);
+					$this->db->set('email', $email);
+					$this->db->where('nik', $nik);
+					$this->db->update('tb_pengguna');
+
+					$this->db->delete('tb_token', ['email' => $email]);
+					$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Berhasil aktivasi! Silahkan login.</div>');
+					redirect('auth');
+				} else {					
+					$this->db->delete('tb_token', ['email' => $email]);
+					$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Token expired!</div>');
+					redirect('auth');
+				}
+			} else {
+				$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Gagal aktivasi akun! Token salah</div>');
+			}
+		} else {
+			$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Gagal aktivasi akun! NIK salah</div>');
+			redirect('auth');
+		}
 	}
 
 }

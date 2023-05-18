@@ -84,6 +84,15 @@
                       <option value="3" <?= set_select('role_id', '3') ?>>Pelaku Usaha</option>
                     </select>
                   </div>
+                  <div class="form-group">            
+                    <label>Status Akun</label>
+                    <?= form_error('is_active', '<small class="text-danger pl-3">', '</small>') ?>
+                    <select class="form-control" name="is_active" id="is_active">
+                      <option value="">---Pilih Status Akun---</option>
+                      <option value="1" <?= set_select('is_active', '1') ?>>Sudah Aktivasi</option>
+                      <option value="0" <?= set_select('is_active', '0') ?>>Belum Aktivasi</option>
+                    </select>
+                  </div>
                   <div class="form-group">               
                     <label>Nama Lengkap</label>
                     <?= form_error('nama', '<small class="text-danger pl-3">', '</small>') ?>

@@ -8,19 +8,33 @@
         </div>
         <div class="col-lg-12">
           <div class="panel panel-primary">
-            <div class="panel-heading">              
-              <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                  <i class="fa fa-filter fa-fw"></i> Kecamatan
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-lg-2">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <i class="fa fa-filter fa-fw"></i> Kecamatan
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                     <li><a class="dropdown-item" href="<?= base_url('map')?>">Semua Kecamatan</a></li>
-                  <?php foreach ($kecamatan as $key => $value) { ?>              
-                    <li><a class="dropdown-item" href="<?= base_url('map/kecamatan/').$value->id ?>"><?= $value->nama ?></a></li>
-                  <?php } ?>
-                </ul>
-              </div>
+                    <?php foreach ($kecamatan as $key => $value) { ?>              
+                      <li><a class="dropdown-item" href="<?= base_url('map/kecamatan/').$value->id ?>"><?= $value->nama ?></a></li>
+                    <?php } ?>
+                  </ul>
+                </div>
+                <div class="col-lg-2">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <i class="fa fa-filter fa-fw"></i> Sektor
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li><a class="dropdown-item" href="<?= base_url('map')?>">Semua Kecamatan</a></li>
+                    <?php foreach ($sektor as $key => $value) { ?>              
+                      <li><a class="dropdown-item" href="<?= base_url('map/sektor/').$value->id ?>"><?= $value->nama ?></a></li>
+                    <?php } ?>
+                  </ul>
+                </div>
+              </div>                            
             </div>            
             <!-- /.panel-heading -->
             <div class="panel-body">             
@@ -53,16 +67,56 @@
           });
 
           var infowindow = new google.maps.InfoWindow();
-          var marker, i;
+          var marker;
+
+          var icon = {    
+            1: {
+              url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+              scaledSize: new google.maps.Size(30, 30),
+            },
+            2: {
+              url: "http://maps.google.com/mapfiles/ms/icons/tree.png",
+              scaledSize: new google.maps.Size(30, 30),
+            },
+            3: {
+              url: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png",
+              scaledSize: new google.maps.Size(30, 30),
+            },
+            4: {
+              url: "http://maps.google.com/mapfiles/ms/icons/mechanic.png",
+              scaledSize: new google.maps.Size(30, 30),
+            },
+            5: {
+              url: "http://maps.google.com/mapfiles/ms/icons/cabs.png",
+              scaledSize: new google.maps.Size(30, 30),
+            },
+            6: {
+              url: "http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png",
+              scaledSize: new google.maps.Size(30, 30),
+            },
+            7: {
+              url: "http://maps.google.com/mapfiles/ms/icons/brown-dot.png",
+              scaledSize: new google.maps.Size(30, 30),
+            },
+            8: {
+              url: "http://maps.google.com/mapfiles/ms/icons/homegardenbusiness.png",
+              scaledSize: new google.maps.Size(25, 25),
+            },
+            9: {
+              url: "http://maps.google.com/mapfiles/ms/icons/dollar.png",
+              scaledSize: new google.maps.Size(30, 30),      
+            },
+          };
 
           <?php foreach ($umkm as $key => $value) { ?>
             marker = new google.maps.Marker({
               position: new google.maps.LatLng(<?= $value->umkm_lat ?>, <?= $value->umkm_lon ?>),
               map: map,
+              icon: icon[<?= $value->id_sektor ?>],      
               animation: google.maps.Animation.DROP
             }); 
 
-            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            google.maps.event.addListener(marker, 'click', (function(marker) {
               return function() {
                 infowindow.setContent(
                   "<img src='<?= base_url('template/img/umkm/'.$value->gambar) ?>' width='250px' height='120px'>" +
@@ -75,6 +129,29 @@
                   );
                 infowindow.open(map, marker);
               }
-            })(marker, i));           
-          <?php } ?>                         
+            })(marker));           
+          <?php } ?>  
+
+          var infowindowKecamatan = new google.maps.InfoWindow();
+          var markerKecamatan;
+          const imageKecamatan = "https://developers.google.com/maps/documentation/javascript/examples/full/images/info-i_maps.png";
+
+          <?php foreach ($kecamatan as $key => $value) { ?>
+            markerKecamatan = new google.maps.Marker({
+              position: new google.maps.LatLng(<?= $value->kec_lat ?>, <?= $value->kec_lon ?>),
+              map: map,
+              icon: imageKecamatan,
+              title: "Kecamatan <?= $value->nama ?>",
+              animation: google.maps.Animation.DROP
+            });
+
+            google.maps.event.addListener(markerKecamatan, 'click', (function(markerKecamatan) {
+              return function() {
+                infowindowKecamatan.setContent(          
+                  "<h4>Kecamatan <?= $value->nama ?></h4>" 
+                  );
+                infowindowKecamatan.open(map, markerKecamatan);
+              }
+            })(markerKecamatan));
+          <?php } ?>                       
       </script>        

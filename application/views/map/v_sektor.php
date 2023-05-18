@@ -4,20 +4,20 @@
     <div class="row">
       <div class="col-lg-12">
         <h1 class="page-header"> 
-          <i class="fa fa-map fa-fw"></i> <?= $title.$kec_current->nama ?></h1>
+          <i class="fa fa-map fa-fw"></i> <?= $title.$sektor_current->nama ?></h1>
         </div>
         <div class="col-lg-12">
           <div class="panel panel-primary">
             <div class="panel-heading">              
               <div class="dropdown">
                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                  <i class="fa fa-filter fa-fw"></i> Kecamatan
+                  <i class="fa fa-filter fa-fw"></i> Sektor
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                  <li><a class="dropdown-item" href="<?= base_url('map')?>">Semua Kecamatan</a>
-                  <?php foreach ($kecamatan as $key => $value) { ?>              
-                    <li><a class="dropdown-item" href="<?= base_url('map/kecamatan/').$value->id ?>"><?= $value->nama ?></a></li>
+                  <li><a class="dropdown-item" href="<?= base_url('map')?>">Semua Sektor</a>
+                  <?php foreach ($sektor as $key => $value) { ?>              
+                    <li><a class="dropdown-item" href="<?= base_url('map/sektor/').$value->id ?>"><?= $value->nama ?></a></li>
                   <?php } ?>
                 </ul>
               </div>
@@ -81,7 +81,7 @@
               scaledSize: new google.maps.Size(30, 30),
             },
             7: {
-              url: "http://maps.google.com/mapfiles/ms/icons/brown-dot.png",
+              url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
               scaledSize: new google.maps.Size(30, 30),
             },
             8: {
@@ -97,8 +97,8 @@
           <?php foreach ($umkm as $key => $value) { ?>
             marker = new google.maps.Marker({
               position: new google.maps.LatLng(<?= $value->umkm_lat ?>, <?= $value->umkm_lon ?>),
-              map: map,
-              icon: icon[<?= $value->id_sektor ?>],      
+              map: map,     
+              icon: icon[<?= $value->id_sektor ?>],             
               animation: google.maps.Animation.DROP
             });          
 

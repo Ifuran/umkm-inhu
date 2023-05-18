@@ -17,6 +17,7 @@ class Map extends CI_Controller {
 			'user'	=> $this->db->get_where('tb_pengguna', ['nik' => $this->session->userdata('nik')])->row_array(),
 			'map'	=> $this->googlemaps->create_map(),	
 			'kecamatan' => $this->m_map->kecamatan(),
+			'sektor' => $this->m_map->sektor(),
 			'umkm'  => $this->m_map->umkm(),
 			'geojson'  => $this->m_map->geojson(),									
 			'isi' 	=> 'map/v_map'
@@ -48,6 +49,21 @@ class Map extends CI_Controller {
 			'kec_current' => $this->m_map->kec_current($id),
 			'geojson'  => $this->m_map->geojson(),
 			'isi' 	=> 'map/v_kecamatan' 
+		);
+		$this->load->view('template/v_wrapper', $data, FALSE);
+	}
+
+	public function sektor($id) {
+		$data = array(
+			'title'	=> 'Persebaran Sektor UMKM ',
+			'user'	=> $this->db->get_where('tb_pengguna', ['nik' => $this->session->userdata('nik')])->row_array(),
+			'map'	=> $this->googlemaps->create_map(),	
+			'sektor' => $this->m_map->sektor(),
+			'umkm'  => $this->m_map->umkm_sektor($id),
+			'kecamatan' => $this->m_map->kecamatan(),			
+			'sektor_current' => $this->m_map->sektor_current($id),
+			'geojson'  => $this->m_map->geojson(),
+			'isi' 	=> 'map/v_sektor'
 		);
 		$this->load->view('template/v_wrapper', $data, FALSE);
 	}

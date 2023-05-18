@@ -316,6 +316,10 @@ class Umkm extends CI_Controller {
 	}
 
 	public function detail($id) {
+		$cek = $this->m_umkm->profile($id);
+		if (!$cek) {
+			redirect('auth/pageNotFound');
+		}
 		$data = array(
 			'title' => 'Data Usaha',
 			'isi' => 'umkm/v_detail',

@@ -45,6 +45,17 @@ class M_dashboard extends CI_Model {
 		return $this->db->get()->result();
 	}
 
+	public function list() {
+		$this->db->select('*,tb_umkm.id as id_umkm, tb_pengguna.nama as user,tb_kecamatan.id as id_kecamatan, tb_kecamatan.nama as kecamatan, tb_sektor.id as id_sektor, tb_sektor.nama as sektor');
+		$this->db->from('tb_umkm');
+		$this->db->join('tb_pengguna', 'tb_pengguna.id = tb_umkm.id_pengguna');
+		$this->db->join('tb_kecamatan', 'tb_kecamatan.id = tb_umkm.id_kec');
+		$this->db->join('tb_sektor', 'tb_sektor.id = tb_umkm.id_sektor');
+		$this->db->where('tb_umkm.approve', 1);
+		$this->db->order_by("tb_kecamatan.id", "desc");
+		return $this->db->get()->result();
+	}
+
 }
 
 /* End of file M_dashboard.php */

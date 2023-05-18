@@ -11,7 +11,7 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between">
-            <a href="#" class="d-none d-sm-inline-block btn btn-success shadow-sm"><i class="fa fa-download fa-fw"></i> Cetak Laporan</a>  
+            <a href="<?= base_url('dashboard/print') ?>" class="d-none d-sm-inline-block btn btn-success shadow-sm"><i class="fa fa-print fa-fw"></i> Cetak Laporan</a>  
           </div>
           <div><br></div>
           <!-- /.row -->
@@ -24,7 +24,7 @@
                       <i class="fa fa-table fa-3x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                      <div class="huge"><?= $umkm ?></div>
+                      <div class="huge"><?= $jlh_umkm ?></div>
                       <div>UMKM</div>
                     </div>
                   </div>
@@ -39,7 +39,7 @@
                       <i class="fa fa-map fa-3x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                      <div class="huge"><?= $users ?></div>
+                      <div class="huge"><?= $jlh_users ?></div>
                       <div>PENGGUNA</div>
                     </div>
                   </div>
@@ -54,7 +54,7 @@
                       <i class="fa fa-user fa-3x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                      <div class="huge"><?= $pelaku_usaha ?></div>
+                      <div class="huge"><?= $jlh_pelaku_usaha ?></div>
                       <div>PELAKU USAHA</div>
                     </div>
                   </div>
@@ -69,7 +69,7 @@
                       <i class="fa fa-map fa-3x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                      <div class="huge"><?= $sektor ?></div>
+                      <div class="huge"><?= $jlh_sektor ?></div>
                       <div>SEKTOR USAHA</div>
                     </div>
                   </div>
@@ -84,7 +84,7 @@
                       <i class="fa fa-user fa-3x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                      <div class="huge"><?= $kecamatan ?></div>
+                      <div class="huge"><?= $jlh_kecamatan ?></div>
                       <div>KECAMATAN</div>
                     </div>
                   </div>
@@ -123,7 +123,7 @@
           //Inisialisasi nilai variabel awal
           $nama_sektor= "";
           $jumlah_sektor=null;
-          foreach ($sektor_umkm as $item)
+          foreach ($sektor as $item)
           {
             $jur_sektor=$item->nama_sektor;
             $nama_sektor .= "'$jur_sektor'". ", ";
@@ -134,7 +134,7 @@
           //Inisialisasi nilai variabel awal
           $nama_kecamatan= "";
           $jumlah_kecamatan=null;
-          foreach ($kecamatan_umkm as $item)
+          foreach ($kecamatan as $item)
           {
             $jur_kecamatan=$item->nama_kecamatan;
             $nama_kecamatan .= "'$jur_kecamatan'". ", ";
